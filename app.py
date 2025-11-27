@@ -262,55 +262,89 @@ elif opcion == "📅 Ver Bitácora de Hoy":
     
     st.markdown("---")
     
+    # FILTRO PARA BITÁCORA DE HOY
     if len(df_hoy) > 0:
-        # Ordenar por hora (más reciente primero)
-        df_hoy = df_hoy.sort_values('Fecha y Hora', ascending=False)
+        st.subheader("🔍 Filtros para Hoy")
         
-        st.subheader(f"📊 Registros de Hoy: {len(df_hoy)}")
+        # Filtro por usuario
+        if 'Nombre' in df_hoy.columns:
+            usuarios_hoy = ["Todos"] + sorted(df_hoy['Nombre'].unique().tolist())
+            usuario_filtro_hoy = st.selectbox(
+                "Filtrar por Usuario", 
+                usuarios_hoy,
+                key="filtro_usuario_hoy"
+            )
+        else:
+            usuario_filtro_hoy = "Todos"
         
-        # Mostrar cada registro
-        for idx, row in df_hoy.iterrows():
-            with st.expander(
-                f"🕐 {row.get('Hora', 'N/A')} - "
-                f"{row.get('Nombre', 'N/A')} - {row.get('Actividad', 'N/A')}",
-                expanded=True
-            ):
-                col1, col2 = st.columns([1, 2])
-                
-                with col1:
-                    st.markdown("**📌 Información General**")
-                    st.write(f"**Usuario:** {row.get('Nombre', 'N/A')}")
-                    st.write(f"**Actividad:** {row.get('Actividad', 'N/A')}")
-                    st.write(f"**Hora:** {row.get('Hora', 'N/A')}")
-                
-                with col2:
-                    st.markdown("**📝 Detalles**")
-                    
-                    # Mostrar todos los campos relevantes
-                    for column in df_hoy.columns:
-                        if column not in ['Fecha y Hora', 'Fecha', 'Hora', 'Nombre', 'Actividad']:
-                            valor = row[column]
-                            if pd.notna(valor) and str(valor).strip() != '':
-                                st.write(f"**{column}:** {valor}")
+        # Aplicar filtro
+        df_hoy_filtrado = df_hoy.copy()
         
-        # Opción de descarga
+        if usuario_filtro_hoy != "Todos" and 'Nombre' in df_hoy.columns:
+            df_hoy_filtrado = df_hoy_filtrado[df_hoy_filtrado['Nombre'] == usuario_filtro_hoy]
+        
         st.markdown("---")
-        st.subheader("📥 Descargar Datos de Hoy")
         
-        output = BytesIO()
-        with pd.ExcelWriter(output, engine='openpyxl') as writer:
-            df_hoy.to_excel(writer, index=False, sheet_name='Bitácora Hoy')
-        output.seek(0)
+        # Mostrar estadísticas filtradas
+        if usuario_filtro_hoy != "Todos":
+            col1, col2 = st.columns(2)
+            with col1:
+                st.metric(f"Entregas de {usuario_filtro_hoy}", len(df_hoy_filtrado))
+            with col2:
+                if 'Actividad' in df_hoy_filtrado.columns:
+                    st.metric("Actividades Realizadas", df_hoy_filtrado['Actividad'].nunique())
         
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        # Ordenar por hora (más reciente primero)
+        df_hoy_filtrado = df_hoy_filtrado.sort_values('Fecha y Hora', ascending=False)
         
-        st.download_button(
-            label="📥 Descargar Excel",
-            data=output.getvalue(),
-            file_name=f"bitacora_hoy_{timestamp}.xlsx",
-            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            use_container_width=True
-        )
+        st.subheader(f"📊 Registros de Hoy: {len(df_hoy_filtrado)}")
+        
+        if len(df_hoy_filtrado) > 0:
+            # Mostrar cada registro
+            for idx, row in df_hoy_filtrado.iterrows():
+                with st.expander(
+                    f"🕐 {row.get('Hora', 'N/A')} - "
+                    f"{row.get('Nombre', 'N/A')} - {row.get('Actividad', 'N/A')}",
+                    expanded=True
+                ):
+                    col1, col2 = st.columns([1, 2])
+                    
+                    with col1:
+                        st.markdown("**📌 Información General**")
+                        st.write(f"**Usuario:** {row.get('Nombre', 'N/A')}")
+                        st.write(f"**Actividad:** {row.get('Actividad', 'N/A')}")
+                        st.write(f"**Hora:** {row.get('Hora', 'N/A')}")
+                    
+                    with col2:
+                        st.markdown("**📝 Detalles**")
+                        
+                        # Mostrar todos los campos relevantes
+                        for column in df_hoy_filtrado.columns:
+                            if column not in ['Fecha y Hora', 'Fecha', 'Hora', 'Nombre', 'Actividad']:
+                                valor = row[column]
+                                if pd.notna(valor) and str(valor).strip() != '':
+                                    st.write(f"**{column}:** {valor}")
+            
+            # Opción de descarga
+            st.markdown("---")
+            st.subheader("📥 Descargar Datos de Hoy")
+            
+            output = BytesIO()
+            with pd.ExcelWriter(output, engine='openpyxl') as writer:
+                df_hoy_filtrado.to_excel(writer, index=False, sheet_name='Bitácora Hoy')
+            output.seek(0)
+            
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            
+            st.download_button(
+                label="📥 Descargar Excel",
+                data=output.getvalue(),
+                file_name=f"bitacora_hoy_{timestamp}.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                use_container_width=True
+            )
+        else:
+            st.info(f"No hay registros para {usuario_filtro_hoy} en el día de hoy.")
     
     else:
         st.warning("⚠️ No hay registros para el día de hoy.")
