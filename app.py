@@ -90,6 +90,49 @@ st.markdown("""
         padding: 15px;
         box-shadow: 0 2px 4px rgba(1,228,0,0.1);
     }
+    
+    /* Sidebar header styling */
+    .sidebar-header {
+        background: rgba(255, 255, 255, 0.15);
+        padding: 15px;
+        border-radius: 12px;
+        margin: 10px 0;
+        text-align: center;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        backdrop-filter: blur(10px);
+    }
+    
+    .sidebar-header h3 {
+        color: white !important;
+        font-weight: 700;
+        font-size: 1.2em;
+        margin: 0;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    .sidebar-subheader {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 12px;
+        border-radius: 10px;
+        margin: 8px 0;
+        text-align: center;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .sidebar-subheader h4 {
+        color: white !important;
+        font-weight: 600;
+        font-size: 1.1em;
+        margin: 0;
+    }
+    
+    /* Divider styling */
+    .custom-divider {
+        border: 0;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+        margin: 20px 0;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -156,8 +199,8 @@ def cargar_datos_github():
 
 # Sidebar
 st.sidebar.markdown("""
-<div style="text-align: center; padding: 10px;">
-    <h1>🔍 Navegación</h1>
+<div class="sidebar-header">
+    <h3>🔍 Navegación</h3>
 </div>
 """, unsafe_allow_html=True)
 
@@ -166,17 +209,24 @@ opcion = st.sidebar.radio(
     ["📋 Ver Bitácora General", "📅 Ver Bitácora de Hoy"]
 )
 
-st.sidebar.markdown("---")
-st.sidebar.markdown("### 🔄 Actualizar datos")
-if st.sidebar.button("Recargar", use_container_width=True):
+st.sidebar.markdown('<hr class="custom-divider">', unsafe_allow_html=True)
+
+st.sidebar.markdown("""
+<div class="sidebar-subheader">
+    <h4>🔄 Actualizar datos</h4>
+</div>
+""", unsafe_allow_html=True)
+
+if st.sidebar.button("Recargar Datos", use_container_width=True):
     st.cache_data.clear()
     st.rerun()
 
-st.sidebar.markdown("---")
+st.sidebar.markdown('<hr class="custom-divider">', unsafe_allow_html=True)
+
 st.sidebar.markdown("""
-<div style="text-align: center;">
-    <p><strong>Bitácora de Entregas | Gopass</strong></p>
-    <p>Created by Angel Torres</p>
+<div style="text-align: center; padding: 10px;">
+    <p style="font-weight: 600; margin-bottom: 5px;">Bitácora de Entregas | Gopass</p>
+    <p style="font-size: 0.9em; opacity: 0.9;">Created by Angel Torres</p>
 </div>
 """, unsafe_allow_html=True)
 
