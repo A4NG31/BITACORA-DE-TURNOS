@@ -12,16 +12,99 @@ st.set_page_config(
     layout="wide"
 )
 
+# Aplicar estilos CSS personalizados para la sidebar
+st.markdown("""
+<style>
+    /* Sidebar styling */
+    [data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #01E400 0%, #00C400 100%);
+    }
+    
+    [data-testid="stSidebar"] .stRadio > div {
+        background-color: white;
+        border-radius: 10px;
+        padding: 10px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    [data-testid="stSidebar"] .stButton button {
+        background-color: white;
+        color: #01E400;
+        border: 2px solid white;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    [data-testid="stSidebar"] .stButton button:hover {
+        background-color: #f0fff0;
+        color: #00C400;
+        border-color: #f0fff0;
+        transform: translateY(-2px);
+    }
+    
+    [data-testid="stSidebar"] .stMarkdown h1, 
+    [data-testid="stSidebar"] .stMarkdown h2, 
+    [data-testid="stSidebar"] .stMarkdown h3 {
+        color: white !important;
+        text-align: center;
+    }
+    
+    [data-testid="stSidebar"] .stMarkdown p,
+    [data-testid="stSidebar"] .stMarkdown .stCaption {
+        color: white !important;
+        text-align: center;
+    }
+    
+    /* Radio button styling */
+    [data-testid="stSidebar"] .stRadio [role="radiogroup"] {
+        gap: 8px;
+    }
+    
+    [data-testid="stSidebar"] .stRadio [data-testid="stWidgetLabel"] p {
+        color: #01E400 !important;
+        font-weight: 600;
+    }
+    
+    /* Logo styling */
+    .logo-container {
+        text-align: center;
+        margin-bottom: 20px;
+        padding: 15px;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    
+    /* Main content improvements */
+    .main-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    
+    /* Metric cards styling */
+    [data-testid="metric-container"] {
+        background-color: #f8fff8;
+        border: 1px solid #e6ffe6;
+        border-radius: 10px;
+        padding: 15px;
+        box-shadow: 0 2px 4px rgba(1,228,0,0.1);
+    }
+</style>
+""", unsafe_allow_html=True)
+
 # Logo de GoPass
 st.markdown("""
-<div style="text-align: center; margin-bottom: 20px;">
+<div class="logo-container">
     <img src="https://i.imgur.com/z9xt46F.jpeg"
          style="width: 300px; border-radius: 10px;" 
          alt="Logo Gopass">
 </div>
 """, unsafe_allow_html=True)
 
+st.markdown('<div class="main-header">', unsafe_allow_html=True)
 st.title("📊 Bitácora de Entregas de Turno")
+st.markdown('</div>', unsafe_allow_html=True)
 
 # Función para cargar datos desde GitHub
 @st.cache_data(ttl=60)  # Cache por 60 segundos
@@ -72,7 +155,12 @@ def cargar_datos_github():
         return None, f"Error: {str(e)}"
 
 # Sidebar
-st.sidebar.title("🔍 Navegación")
+st.sidebar.markdown("""
+<div style="text-align: center; padding: 10px;">
+    <h1>🔍 Navegación</h1>
+</div>
+""", unsafe_allow_html=True)
+
 opcion = st.sidebar.radio(
     "Selecciona una opción:",
     ["📋 Ver Bitácora General", "📅 Ver Bitácora de Hoy"]
@@ -85,8 +173,12 @@ if st.sidebar.button("Recargar", use_container_width=True):
     st.rerun()
 
 st.sidebar.markdown("---")
-st.sidebar.caption("Bitácora de Entregas | Gopass")
-st.sidebar.caption("Created by Angel Torres")
+st.sidebar.markdown("""
+<div style="text-align: center;">
+    <p><strong>Bitácora de Entregas | Gopass</strong></p>
+    <p>Created by Angel Torres</p>
+</div>
+""", unsafe_allow_html=True)
 
 # Cargar datos
 with st.spinner("Cargando datos desde GitHub..."):
