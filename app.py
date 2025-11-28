@@ -223,6 +223,13 @@ if st.sidebar.button("Recargar Datos", use_container_width=True):
 
 st.sidebar.markdown('<hr class="custom-divider">', unsafe_allow_html=True)
 
+# Botón para redirigir al formulario
+if st.sidebar.link_button("📝 Ir al Formulario", 
+                         url="https://formulario-aseguramiento-angeltorres.streamlit.app/", 
+                         use_container_width=True):
+    st.sidebar.success("Redirigiendo al formulario...")
+                             
+
 st.sidebar.markdown("""
 <div style="text-align: center; padding: 10px;">
     <p style="font-weight: 600; margin-bottom: 5px;">Bitácora de Entregas | Gopass</p>
