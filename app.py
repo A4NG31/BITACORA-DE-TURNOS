@@ -227,7 +227,7 @@ st.sidebar.markdown('<hr class="custom-divider">', unsafe_allow_html=True)
 if st.sidebar.link_button("📝 Ir al Formulario", 
                          url="https://formulario-aseguramiento-angeltorres.streamlit.app/", 
                          use_container_width=True):
-    st.sidebar.success("Redirigiendo al formulario...")
+    st.sidebar.success("👆Haz click para ir al fomulario")
                              
 
 st.sidebar.markdown("""
